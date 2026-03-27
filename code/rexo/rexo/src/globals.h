@@ -14,20 +14,25 @@ extern LiquidCrystal_I2C lcd;
 
 extern Servo leftKnee, leftHip, rightKnee, rightHip;
 
-enum Settings {
+enum Setting
+{
   LEV_BEDRO_INIT,
   LEV_KOLENO_INIT,
   PRAV_BEDRO_INIT,
   PRAV_KOLENO_INIT
 };
+extern String settingLabels[];
+extern Setting setting;
 
-enum State {
-  IDLE,  // 0
-  SETUP, // 1
-  RUN    // 2
+
+enum Mode
+{
+  NASTROYKA, // 0
+  PRISED,   // 1
+  NA_MESTE  // 2
 };
-
-extern State state;
+extern String modeLabels[];
+extern Mode mode;
 
 void lcdPrint(String str1, String str2);
 

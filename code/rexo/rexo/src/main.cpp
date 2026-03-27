@@ -78,6 +78,8 @@ void setup() {
   buttonRight.attachClick(clickRight);
   buttonUp.attachClick(clickUp);
   buttonDown.attachClick(clickDown);
+
+  lcdPrint(modeLabels[mode], "");
 }
 
 void loop() {
