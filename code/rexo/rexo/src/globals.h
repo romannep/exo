@@ -12,7 +12,19 @@ extern OneButton buttonDown;
 
 extern LiquidCrystal_I2C lcd;
 
+
+enum ServoItem {
+  LEV_BEDRO,
+  LEV_KOLENO,
+  PRAV_BEDRO,
+  PRAV_KOLENO
+};
 extern Servo leftKnee, leftHip, rightKnee, rightHip;
+extern int servoZero;
+extern int servoDirection[];
+Servo getServo(int servo);
+void move(int servo, int angle);
+void initialPosition();
 
 enum Setting
 {
@@ -22,8 +34,9 @@ enum Setting
   PRAV_KOLENO_INIT
 };
 extern String settingLabels[];
-extern Setting setting;
-
+extern int setting;
+extern int settingMax;
+extern int settingValues[];
 
 enum Mode
 {
@@ -32,7 +45,10 @@ enum Mode
   NA_MESTE  // 2
 };
 extern String modeLabels[];
-extern Mode mode;
+extern int mode;
+extern int modeMax;
+
+extern int menuLevel;
 
 void lcdPrint(String str1, String str2);
 

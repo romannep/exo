@@ -4,74 +4,131 @@
 #include <Servo.h>
 #include <globals.h>
 
+static void drawMenu()
+{
+  String row1 = modeLabels[mode];
+  String row2 = "";
+  if (menuLevel > 0)
+  {
+    row1 = row1.substring(0, 4);
+    row1.concat(':');
 
+    if (mode == 0)
+    {
+      row1.concat(settingLabels[setting]);
 
-static void clickLeft() {
-  int angle = leftHip.read();
-  if (angle == 90) {
-    angle = 0;
-  } else if (angle == 0) {
-    angle = 180;
-  } else {
-    angle = 90;
+      if (menuLevel == 2)
+      {
+        row2 = String(settingValues[setting]);
+      }
+    }
   }
-  lcdPrint("Clicked LEFT","Go to " + String(angle));
-  leftHip.write(angle);
+  lcdPrint(row1, row2);
 }
 
-static void clickRight() {
-  int angle = leftKnee.read();
-  if (angle == 90) {
-    angle = 0;
-  } else if (angle == 0) {
-    angle = 180;
-  } else {
-    angle = 90;
+static void clickLeft()
+{
+  Serial.println("Left");
+  menuLevel--;
+  if (menuLevel < 0)
+  {
+    menuLevel = 0;
   }
-  lcdPrint("Clicked RIGHT","Go to " + String(angle));
-  leftKnee.write(angle);
+
+  drawMenu();
 }
 
-static void clickUp() {
-  int angle = rightHip.read();
-  if (angle == 90) {
-    angle = 0;
-  } else if (angle == 0) {
-    angle = 180;
-  } else {
-    angle = 90;
+static void clickRight()
+{
+  Serial.println("Right");
+  if (menuLevel == 0)
+  {
+    menuLevel++;
   }
-  lcdPrint("Clicked UP","Go to " + String(angle));
-  rightHip.write(angle);
+  if (menuLevel == 1 && mode == 0)
+  {
+    menuLevel = 2;
+  }
+
+  drawMenu();
 }
 
-static void clickDown() {
-  int angle = rightKnee.read();
-  if (angle == 90) {
-    angle = 0;
-  } else if (angle == 0) {
-    angle = 180;
-  } else {
-    angle = 90;
+static void clickUp()
+{
+  Serial.println("UP");
+  if (menuLevel == 0)
+  {
+    mode++;
+    if (mode > modeMax)
+    {
+      mode = 0;
+    }
   }
-  lcdPrint("Clicked DOWN","Go to " + String(angle));
-  rightKnee.write(angle);
+  else if (menuLevel == 1)
+  {
+    if (mode == 0)
+    {
+      setting++;
+      if (setting > settingMax)
+      {
+        setting = 0;
+      }
+    }
+  }
+  else if (menuLevel == 2)
+  {
+    if (mode == 0)
+    {
+      settingValues[setting]++;
+    }
+  }
+
+  drawMenu();
 }
 
-void setup() {
+static void clickDown()
+{
+  Serial.println("DOWN");
+
+  if (menuLevel == 0)
+  {
+    mode--;
+    if (mode < 0)
+    {
+      mode = modeMax;
+    }
+  }
+  else if (menuLevel == 1)
+  {
+    if (mode == 0)
+    {
+      setting--;
+      if (setting < 0)
+      {
+        setting = settingMax;
+      }
+    }
+  }
+  else if (menuLevel == 2)
+  {
+    if (mode == 0)
+    {
+      settingValues[setting]--;
+    }
+  }
+
+  drawMenu();
+}
+
+void setup()
+{
   lcd.init();
   lcd.backlight();
 
-  leftHip.write(90);
+  initialPosition();
   leftHip.attach(10);
-
-  leftKnee.write(90);
   leftKnee.attach(9);
-
-  rightHip.write(90);
   rightHip.attach(8);
-
-  rightKnee.write(90);
   rightKnee.attach(7);
 
   buttonLeft.attachClick(clickLeft);
@@ -79,13 +136,13 @@ void setup() {
   buttonUp.attachClick(clickUp);
   buttonDown.attachClick(clickDown);
 
-  lcdPrint(modeLabels[mode], "");
+  drawMenu();
 }
 
-void loop() {
+void loop()
+{
   buttonLeft.tick();
   buttonRight.tick();
   buttonUp.tick();
   buttonDown.tick();
 }
-
