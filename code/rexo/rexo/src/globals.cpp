@@ -54,10 +54,10 @@ Servo getServo(int servo)
     return leftHip;
     break;
   case PRAV_KOLENO:
-    return leftKnee;
+    return rightKnee;
     break;
   case PRAV_BEDRO:
-    return leftHip;
+    return rightHip;
     break;
 
   default:
@@ -70,7 +70,9 @@ int servoDirection[] = {1, 1, -1, -1};
 
 void move(int servo, int angle)
 {
-  int value = servoZero + settingValues[servo] + angle*servoDirection[servo];
+  // 0 to 180 on Servo equals 0 to 360 at device
+  // so, we need divide angle by 2
+  int value = servoZero + settingValues[servo] + (angle * servoDirection[servo] / 2);
   Servo servoObj = getServo(servo);
   servoObj.write(value);
 }

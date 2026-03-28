@@ -22,6 +22,14 @@ static void drawMenu()
         row2 = String(settingValues[setting]);
       }
     }
+    else if (mode == 1)
+    {
+      row2 = "  -  -  U  D";
+    }
+    else if (mode == 2)
+    {
+      row2 = "  -  -  L  R";
+    }
   }
   lcdPrint(row1, row2);
 }
@@ -53,6 +61,9 @@ static void clickRight()
   drawMenu();
 }
 
+int leftState = 0;
+int rightState = 0;
+
 static void clickUp()
 {
   Serial.println("UP");
@@ -72,6 +83,25 @@ static void clickUp()
       if (setting > settingMax)
       {
         setting = 0;
+      }
+    }
+    else if (mode == 1)
+    {
+      initialPosition();
+    }
+    else if (mode == 2)
+    {
+      if (leftState == 0)
+      {
+        move(LEV_BEDRO, 15);
+        move(LEV_KOLENO, -30);
+        leftState = 1;
+      }
+      else
+      {
+        move(LEV_BEDRO, 0);
+        move(LEV_KOLENO, 0);
+        leftState = 0;
       }
     }
   }
@@ -106,6 +136,28 @@ static void clickDown()
       if (setting < 0)
       {
         setting = settingMax;
+      }
+    }
+    else if (mode == 1)
+    {
+      move(LEV_BEDRO, 15);
+      move(LEV_KOLENO, -30);
+      move(PRAV_BEDRO, 15);
+      move(PRAV_KOLENO, -30);
+    }
+    else if (mode == 2)
+    {
+      if (rightState == 0)
+      {
+        move(PRAV_BEDRO, 15);
+        move(PRAV_KOLENO, -30);
+        rightState = 1;
+      }
+      else
+      {
+        move(PRAV_BEDRO, 0);
+        move(PRAV_KOLENO, 0);
+        rightState = 0;
       }
     }
   }
