@@ -36,7 +36,8 @@ enum Setting
 extern String settingLabels[];
 extern int setting;
 extern int settingMax;
-extern int settingValues[];
+extern int settingValues[4];
+extern int settingsVersion;
 
 enum Mode
 {

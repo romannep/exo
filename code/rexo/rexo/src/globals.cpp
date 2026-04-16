@@ -19,7 +19,8 @@ String settingLabels[] = {
     "PRAV KOLENO INIT"};
 int setting = 0;
 int settingMax = 3;
-int settingValues[] = {1, 2, 3, 4};
+int settingValues[] = {0, 0, 0, 0};
+int settingsVersion = 14;
 
 OneButton buttonLeft = OneButton(12, true, true);
 OneButton buttonRight = OneButton(11, true, true);
@@ -66,7 +67,7 @@ Servo getServo(int servo)
 }
 
 int servoZero = 90;
-int servoDirection[] = {1, 1, -1, -1};
+int servoDirection[] = {1, -1, -1, 1};
 
 void move(int servo, int angle)
 {

@@ -3,6 +3,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Servo.h>
 #include <globals.h>
+#include <EEPROM.h>
 
 static void drawMenu()
 {
@@ -37,6 +38,11 @@ static void drawMenu()
 static void clickLeft()
 {
   Serial.println("Left");
+  if (mode == 0 && menuLevel == 1)
+  {
+    EEPROM.put(2, settingValues);
+  }
+
   menuLevel--;
   if (menuLevel < 0)
   {
@@ -52,8 +58,7 @@ static void clickRight()
   if (menuLevel == 0)
   {
     menuLevel++;
-  }
-  if (menuLevel == 1 && mode == 0)
+  } else if (menuLevel == 1 && mode == 0)
   {
     menuLevel = 2;
   }
@@ -93,8 +98,8 @@ static void clickUp()
     {
       if (leftState == 0)
       {
-        move(LEV_BEDRO, 15);
-        move(LEV_KOLENO, -30);
+        move(LEV_BEDRO, -15);
+        move(LEV_KOLENO, 30);
         leftState = 1;
       }
       else
@@ -110,6 +115,7 @@ static void clickUp()
     if (mode == 0)
     {
       settingValues[setting]++;
+      initialPosition();
     }
   }
 
@@ -140,17 +146,17 @@ static void clickDown()
     }
     else if (mode == 1)
     {
-      move(LEV_BEDRO, 15);
-      move(LEV_KOLENO, -30);
-      move(PRAV_BEDRO, 15);
-      move(PRAV_KOLENO, -30);
+      move(LEV_BEDRO, -15);
+      move(LEV_KOLENO, 30);
+      move(PRAV_BEDRO, -15);
+      move(PRAV_KOLENO, 30);
     }
     else if (mode == 2)
     {
       if (rightState == 0)
       {
-        move(PRAV_BEDRO, 15);
-        move(PRAV_KOLENO, -30);
+        move(PRAV_BEDRO, -15);
+        move(PRAV_KOLENO, 30);
         rightState = 1;
       }
       else
@@ -166,6 +172,7 @@ static void clickDown()
     if (mode == 0)
     {
       settingValues[setting]--;
+      initialPosition();
     }
   }
 
@@ -177,7 +184,20 @@ void setup()
   lcd.init();
   lcd.backlight();
 
+  int version = 0;
+  EEPROM.get(0, version);
+  if (version != settingsVersion)
+  {
+    EEPROM.put(2, settingValues);
+    EEPROM.put(0, version);
+  }
+  else
+  {
+    EEPROM.get(2, settingValues);
+  }
+
   initialPosition();
+
   leftHip.attach(10);
   leftKnee.attach(9);
   rightHip.attach(8);
